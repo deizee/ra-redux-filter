@@ -5,7 +5,6 @@ import {
   removeService,
   EditService,
   clearService,
-  filterService,
 } from "../actions/actionCreators";
 
 const ServiceList = () => {
@@ -20,9 +19,13 @@ const ServiceList = () => {
   }, [items]);
 
   useEffect(() => {
-    const filteredArray = filteredItems.filter((item) => item.name.includes(inputFilter));
+    if (inputFilter.trim().length === 0) {
+      setFilteredItems([...items]);
+      return;
+    }
+    const filteredArray = filteredItems.filter((item) => item.name.toLowerCase().includes(inputFilter.toLowerCase()));
     setFilteredItems(filteredArray);
-  }, [filteredItems]);
+  }, [inputFilter]);
 
 
 

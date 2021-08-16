@@ -2,7 +2,6 @@ import { nanoid } from "nanoid";
 import {
   ADD_CURRENT_EDIT_ID,
   ADD_SERVICE,
-  FILTER_SERVICE,
   REMOVE_SERVICE,
 } from "../actions/actionTypes";
 
@@ -11,8 +10,7 @@ const initialState = {
     { id: nanoid(), name: "Замена стекла", price: 21000 },
     { id: nanoid(), name: "Замена дисплея", price: 25000 },
   ],
-  currentEditItem: null,
-  // filteredItems: null
+  currentEditItem: null
 };
 
 const serviceListReducer = (state = initialState, action) => {
@@ -59,15 +57,7 @@ const serviceListReducer = (state = initialState, action) => {
           currentEditItem: state.currentEditItem
         };
       }
-    case FILTER_SERVICE:
-      const { val } = action.payload;
-      if (val.length > 0) {
-        state.filteredItems = state.items.filter((el) =>
-          el.name.toLocaleLowerCase().includes(val.toLocaleLowerCase()));
-        return state;
-      }
-      return state;
-      case REMOVE_SERVICE:
+    case REMOVE_SERVICE:
         const { id } = action.payload;
         const newArray = state.items.filter((item) => item.id !== id);
         return {

@@ -5,7 +5,6 @@ import {
   CHANGE_SERVICE_FIELD,
   EDIT_SERVICE,
   CLEAR_SERVICE,
-  FILTER_SERVICE,
 } from "./actionTypes";
 
 export function addCurrentEditId(id) {
@@ -30,8 +29,4 @@ export function clearService() {
 
 export function changeServiceField(name, value) {
   return { type: CHANGE_SERVICE_FIELD, payload: { name, value } };
-}
-
-export function filterService(val) {
-  return { type: FILTER_SERVICE, payload: { val } };
 }
