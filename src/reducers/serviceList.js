@@ -7,11 +7,12 @@ import {
 } from "../actions/actionTypes";
 
 const initialState = {
-  currentEditItem: null,
   items: [
     { id: nanoid(), name: "Замена стекла", price: 21000 },
     { id: nanoid(), name: "Замена дисплея", price: 25000 },
   ],
+  currentEditItem: null,
+  // filteredItems: null
 };
 
 const serviceListReducer = (state = initialState, action) => {
@@ -23,10 +24,16 @@ const serviceListReducer = (state = initialState, action) => {
       };
     case ADD_SERVICE:
       const { name, price } = action.payload;
+
+              console.log('state => ', state)
+
       if (state.currentEditItem) {
         const findItem = state.items.find(
           (item) => state.currentEditItem === item.id
         );
+
+              console.log('findItem => ', findItem)
+
         if (findItem) {
           const newArray = state.items.filter(
             (item) => state.currentEditItem !== item.id
@@ -43,28 +50,30 @@ const serviceListReducer = (state = initialState, action) => {
             currentEditItem: null,
           };
         }
-      }
-      if (state.find((el) => el.name === name)) {
-        return state.map((el, i) => {
-          if (el.name === name) {
-            state[i].price = price;
-          }
-          return el;
-        });
       } else {
-        return [...state, { id: nanoid(), name, price: Number(price) }];
+        return {
+          items: [
+            ...state.items,
+            { id: nanoid(), name, price: Number(price) }
+          ],
+          currentEditItem: state.currentEditItem
+        };
       }
     case FILTER_SERVICE:
       const { val } = action.payload;
       if (val.length > 0) {
-        return state.filter((el) =>
-          el.name.toLocaleLowerCase().includes(val.toLocaleLowerCase())
-        );
+        state.filteredItems = state.items.filter((el) =>
+          el.name.toLocaleLowerCase().includes(val.toLocaleLowerCase()));
+        return state;
       }
       return state;
-    case REMOVE_SERVICE:
-      const { id } = action.payload;
-      return state.filter((service) => service.id !== id);
+      case REMOVE_SERVICE:
+        const { id } = action.payload;
+        const newArray = state.items.filter((item) => item.id !== id);
+        return {
+          items: [...newArray],
+          currentEditItem: state.currentEditItem
+        }
     default:
       return state;
   }

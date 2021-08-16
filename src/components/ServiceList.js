@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addCurrentEditId,
@@ -10,7 +11,20 @@ import {
 const ServiceList = () => {
   const items = useSelector((state) => state.serviceList.items);
   const formState = useSelector((state) => state.serviceAdd);
+  const [filteredItems, setFilteredItems] = useState(items);
+  const [inputFilter, setInputFilter] = useState("");
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    setFilteredItems([...items])
+  }, [items]);
+
+  useEffect(() => {
+    const filteredArray = filteredItems.filter((item) => item.name.includes(inputFilter));
+    setFilteredItems(filteredArray);
+  }, [filteredItems]);
+
+
 
   const handleRemove = (id) => {
     // очищаем форму ввода если удаляем редактируемый элемент
@@ -26,15 +40,15 @@ const ServiceList = () => {
   };
 
   const filterHandler = (evt) => {
-    dispatch(filterService(evt.target.value));
+    setInputFilter(evt.target.value);
   };
 
   return (
     <>
       <span>Фильтр</span>
-      <input name="filter" onChange={filterHandler} />
+      <input name="filter" onChange={filterHandler} value={inputFilter} />
       <ul>
-        {items.map((o) => (
+        {filteredItems.map((o) => (
           <li key={o.id}>
             {o.name} {o.price}
             <button onClick={() => handleRemove(o.id)}>✕</button>
